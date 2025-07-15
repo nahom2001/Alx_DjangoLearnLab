@@ -12,7 +12,6 @@ from django.contrib.auth import login
 
 
 # Create your views here.
-
 def list_books(request):
     books = Book.objects.all()
     context = {
@@ -37,3 +36,4 @@ class SignUpView(CreateView):
     from_class = UserCreationForm
     succcess_url = reverse_lazy('login')
     template_name = 'relationship_app/register.html'
+
