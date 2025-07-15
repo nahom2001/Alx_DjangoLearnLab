@@ -4,6 +4,10 @@ from .models import Book
 from .models import Library
 #Import generic classes for django generic view
 from django.views.generic.detail import DetailView
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+from django.views.generic import CreateView
+from django.urls import reverse_lazy
 
 
 # Create your views here.
@@ -26,3 +30,9 @@ class LibraryDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['books'] = self.object.books.all()  # Fetch all books related to the library
         return context
+
+
+class SignUpView(CreateView):
+    from_class = UserCreationForm
+    succcess_url = reverse_lazy('login')
+    template_name = 'relationship_app/register.html'
