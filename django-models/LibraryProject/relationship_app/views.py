@@ -32,8 +32,13 @@ class LibraryDetailView(DetailView):
         return context
 
 
-class SignUpView(CreateView):
+class RegisterView(CreateView):
     from_class = UserCreationForm
     succcess_url = reverse_lazy('login')
     template_name = 'relationship_app/register.html'
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        login(self.request, self.object)
+        return response
 
