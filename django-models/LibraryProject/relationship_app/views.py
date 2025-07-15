@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Book
 from .models import Library
@@ -32,13 +32,26 @@ class LibraryDetailView(DetailView):
         return context
 
 
-class RegisterView(CreateView):
-    from_class = UserCreationForm
-    succcess_url = reverse_lazy('login')
-    template_name = 'relationship_app/register.html'
+# class RegisterView(CreateView):
+#     from_class = UserCreationForm
+#     succcess_url = reverse_lazy('login')
+#     template_name = 'relationship_app/register.html'
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        login(self.request, self.object)
-        return response
+#     def form_valid(self, form):
+#         response = super().form_valid(form)
+#         login(self.request, self.object)
+#         return response
 
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('login')
+
+        else:
+            form = UserCreationForm()
+        
+        return render(request, 'relationship_app/register.html', {'form': form})
