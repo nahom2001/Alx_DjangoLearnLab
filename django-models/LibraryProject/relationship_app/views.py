@@ -6,4 +6,7 @@ from .models import Book
 
 def get_books(request):
     books = Book.objects.all()
-    return books
+    context = {
+        "books": books
+    }
+    return render(request, 'relationship_app/list_books.html', context )
