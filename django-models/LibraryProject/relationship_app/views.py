@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from .models import Book
 from .models import Library
 #Import generic classes for django generic view
-from django.views.generic import DetailView
+from django.views.generic.detail import DetailView
 
 
 # Create your views here.
