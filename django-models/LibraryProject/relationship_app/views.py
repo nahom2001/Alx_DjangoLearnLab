@@ -42,7 +42,6 @@ class LibraryDetailView(DetailView):
 #         login(self.request, self.object)
 #         return response
 
-
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -55,3 +54,5 @@ def register(request):
             form = UserCreationForm()
         
         return render(request, 'relationship_app/register.html', {'form': form})
+
+
