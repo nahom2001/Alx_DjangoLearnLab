@@ -1,16 +1,11 @@
-from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render
-import logging
+from django.contrib.auth.decorators import user_passes_test
 
-logger = logging.getLogger(__name__)
-
+#Test function for role-based access
 def is_admin(user):
-    if hasattr(user, 'userprofile'):
-        return user.userprofile.role == 'Admin'
-    logger.warning("UserProfile does not exist for user: %s", user.username)
-    return False
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
 
-@user_passes_test(is_admin)
+
+@user_passses_test(is_admin)
 def admin_view(request):
-    # Logic for the admin view
-    return render(request, 'admin_dashboard.html')
+    return render(request, 'admin_view.html')
