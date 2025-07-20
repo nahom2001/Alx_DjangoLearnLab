@@ -1,12 +1,10 @@
+# relationship_app/views/admin_view.py
+from django.views import View
 from django.shortcuts import render
-from django.contrib.auth.decorators import user_passes_test
-from .models import UserProfile
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
-def check_role(role):
-    def role_check(user):
-        return hasattr(user, 'userprofile') and user.userprofile.role == role
-    return role_check
-
-@user_passes_test(check_role('Member'))
-def member_view(request):
-    return render(request, 'member_view.html')
+@method_decorator(login_required, name='dispatch')
+class MemberView(View):
+    def get(self, request):
+        return render(request, 'relationship_app/member_view.html')

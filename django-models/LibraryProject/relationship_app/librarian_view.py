@@ -1,12 +1,10 @@
+# relationship_app/views/librarian_view.py
+from django.views import View
 from django.shortcuts import render
-from django.contrib.auth.decorators import user_passes_test
-from .models import UserProfile
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
-def check_role(role):
-    def role_check(user):
-        return hasattr(user, 'userprofile') and user.userprofile.role == role
-    return role_check
-
-@user_passes_test(check_role('Librarian'))
-def librarian_view(request):
-    return render(request, 'librarian_view.html')
+@method_decorator(login_required, name='dispatch')
+class LibrarianView(View):
+    def get(self, request):
+        return render(request, 'relationship_app/librarian_view.html')
