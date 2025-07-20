@@ -1,5 +1,5 @@
 # relationship_app/views.py
-
+from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 from django.urls import reverse_lazy # Ensure this is imported for redirecting
