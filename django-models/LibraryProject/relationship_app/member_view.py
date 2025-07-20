@@ -1,10 +1,12 @@
-from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render
+from django.contrib.auth.decorators import user_passes_test
+from .models import UserProfile
 
-def is_member(user):
-    return user.userprofile.role == 'Member'
+def check_role(role):
+    def role_check(user):
+        return hasattr(user, 'userprofile') and user.userprofile.role == role
+    return role_check
 
-@user_passes_test(is_member)
+@user_passes_test(check_role('Member'))
 def member_view(request):
-    # Logic for the member view
-    return render(request, 'member_dashboard.html')
+    return render(request, 'member_view.html')

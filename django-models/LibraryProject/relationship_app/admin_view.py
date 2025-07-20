@@ -1,13 +1,12 @@
-# admin_view.py
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.views import View
 from django.shortcuts import render
+from django.contrib.auth.decorators import user_passes_test
+from .models import UserProfile
 
-class AdminView(UserPassesTestMixin, View):
-    def test_func(self):
-        return getattr(self.request.user, 'userprofile', None) and self.request.user.userprofile.role == 'Admin'
+def check_role(role):
+    def role_check(user):
+        return hasattr(user, 'userprofile') and user.userprofile.role == role
+    return role_check
 
-    def get(self, request, *args, **kwargs):
-        return render(request, 'admin_dashboard.html')
-
-# Don't forget to include this in your urls.py
+@user_passes_test(check_role('Admin'))
+def admin_view(request):
+    return render(request, 'admin_view.html')
