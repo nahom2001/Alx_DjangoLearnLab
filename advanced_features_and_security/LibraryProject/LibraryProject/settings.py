@@ -124,6 +124,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
 
+# Configure Django to recognize the X-Forwarded-Proto header
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # Redirect all non-HTTPS requests to HTTPS
 SECURE_SSL_REDIRECT = True
 
