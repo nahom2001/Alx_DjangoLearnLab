@@ -25,10 +25,10 @@ class CustomUserForm(forms.ModelForm):
         }
 
     def clean_date_of_birth(self):
-        Dob = self.cleaned_data.get('date_of_birth')
-        if Dob and Dob > timezone.now().date():
+        dob = self.cleaned_data.get('date_of_birth')
+        if dob and dob > timezone.now().date():
             raise forms.ValidationError("Date of birth cannot be in the future.")
-        return Dob
+        return dob
 
     def clean_profile_photo(self):
         photo = self.cleaned_data.get('profile_photo')
@@ -38,3 +38,21 @@ class CustomUserForm(forms.ModelForm):
             if photo.size > 5 * 1024 * 1024:
                 raise forms.ValidationError("Profile photo must be smaller than 5MB.")
         return photo
+
+# ExampleForm - a simple example form
+class ExampleForm(forms.Form):
+    name = forms.CharField(
+        max_length=100,
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': 'Enter your name'})
+    )
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={'placeholder': 'Enter your email'})
+    )
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not email.endswith('@example.com'):
+            raise forms.ValidationError("Email must be from the domain 'example.com'.")
+        return email
