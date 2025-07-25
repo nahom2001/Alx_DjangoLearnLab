@@ -8,3 +8,13 @@ def book_list(request):
     # Fetch all books from the database
     books = Book.objects.all()
     return render(request, 'bookshelf/book_list.html', {'books': books})
+
+def search_books(request):
+    query = request.GET.get('q')  # Get the search query from the request
+    if query:
+        # Securely filter books using the ORM
+        books = Book.objects.filter(title__icontains=query)
+    else:
+        books = Book.objects.all()
+
+    return render(request, 'bookshelf/book_list.html', {'books': books})
