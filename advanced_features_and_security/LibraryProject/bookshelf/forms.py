@@ -25,10 +25,10 @@ class CustomUserForm(forms.ModelForm):
         }
 
     def clean_date_of_birth(self):
-        dob = self.cleaned_data.get('date_of_birth')
-        if dob and dob > timezone.now().date():
+        Dob = self.cleaned_data.get('date_of_birth')
+        if Dob and Dob > timezone.now().date():
             raise forms.ValidationError("Date of birth cannot be in the future.")
-        return dob
+        return Dob
 
     def clean_profile_photo(self):
         photo = self.cleaned_data.get('profile_photo')
