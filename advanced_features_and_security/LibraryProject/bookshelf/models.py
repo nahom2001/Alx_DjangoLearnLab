@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-# Create your models here.
+# Importing user manager Model
+from django.contrib.auth.models import UserManager
 
 # Create your models here.
 class Book(models.Model):
@@ -22,3 +23,15 @@ class CustomUser(AbstractUser):
         null=True, 
         blank=True
     )
+
+
+class CustomUserManager(UserManager):
+    def create_user(self, username, email=None, password=None, **extra_fields):
+        extra_fields.setdefault('date_of_birth', None)  # Default for custom field
+        extra_fields.setdefault('profile_photo', None)  # Default for custom field
+        return super().create_user(username, email, password, **extra_fields)
+
+    def create_superuser(self, username, email=None, password=None, **extra_fields):
+        extra_fields.setdefault('date_of_birth', None)  # Optional for superuser
+        extra_fields.setdefault('profile_photo', None)  # Optional for superuser
+        return super().create_superuser(username, email, password, **extra_fields)
