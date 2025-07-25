@@ -13,10 +13,6 @@ class Author(models.Model):
     def __str__(self):
         return self.name
 
-class CustomUser(AbstractUser):
-    date_of_birth = models.DateField(null=True, blank=True)
-    profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
-
 # 2. Define Library next.
 #    It needs to refer to 'Book' using a string because Book is defined later.
 class Library(models.Model):
