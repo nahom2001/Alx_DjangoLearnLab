@@ -3,15 +3,16 @@ from django_filters import rest_framework
 from django_filters.rest_framework import DjangoFilterBackend # used to filter 
 from .models import Author, Book
 from api.serializers import AuthorSerializer, BookSerializer
-from rest_framework import generics
+from rest_framework import generics, filters
 
 # Create your views here.
 
 class BookListView(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['author', 'author', 'publication_year']
+    search_fields = ['title', 'author__name']
 
 class BookDetailView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
