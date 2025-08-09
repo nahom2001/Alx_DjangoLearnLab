@@ -4,8 +4,17 @@ from rest_framework.test import APITestCase
 from .models import Author, Book
 import datetime
 
+# import user
+from django.contrib.auth.models import User
+
 class BookAPITests(APITestCase):
     def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+
+        self.client.login(username='testuser', password='testpass')
+        
+
+
         self.author = Author.objects.create(name="George Orwell")
         self.book = Book.objects.create(
             title="1984",
