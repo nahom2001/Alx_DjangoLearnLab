@@ -27,3 +27,17 @@ class ProfileView(UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user  # Return the current user
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        form.save()  # Save the updated user information
+        return super().form_valid(form)  # Redirect to success_url
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
