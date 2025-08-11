@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Comment
+from .models import Comment, Post
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -46,3 +46,16 @@ class CommentForm(forms.ModelForm):
         if not content:
             raise forms.ValidationError("Comment cannot be empty.")
         return content
+
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']  # Include the tags field
+
+    def __init__(self, *args, **kwargs):
+        super(PostForm, self).__init__(*args, **kwargs)
+        self.fields['tags'].widget.attrs.update({
+            'placeholder': 'Add tags separated by commas...',
+            'class': 'form-control',
+        })
