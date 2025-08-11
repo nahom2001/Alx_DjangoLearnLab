@@ -26,6 +26,14 @@ def search_posts(request):
 
     return render(request, 'blog/search_results.html', {'posts': posts, 'query': query})
 
+class PostByTagListView(ListView):
+    model = Post
+    template_name = 'blog/post_list.html'  # Use the same template as post listing
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        tag_slug = self.kwargs['tag_slug']  # Get the tag slug from the URL
+        return Post.objects.filter(tags__slug=tag_slug).distinct()  # Filter posts by tag
 # DetailView to show individual blog posts
 class BlogDetailView(DetailView):
     model = Post
