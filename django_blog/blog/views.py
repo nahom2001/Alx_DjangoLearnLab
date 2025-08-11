@@ -1,6 +1,8 @@
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post, Comment  
 from .forms import CustomUserCreationForm, UserProfileForm, CommentForm
@@ -10,6 +12,19 @@ class BlogListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
+
+def search_posts(request):
+    query = request.GET.get('q')  # Get the search query from the URL parameters
+    if query:
+        posts = Post.objects.filter(
+            Q(title__icontains=query) | 
+            Q(content__icontains=query) | 
+            Q(tags__name__icontains=query)
+        ).distinct()  # Use distinct to avoid duplicates if tags match
+    else:
+        posts = Post.objects.none()  # No posts if no query
+
+    return render(request, 'blog/search_results.html', {'posts': posts, 'query': query})
 
 # DetailView to show individual blog posts
 class BlogDetailView(DetailView):
