@@ -1,10 +1,10 @@
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
-from django.shortcuts import render
 from .forms import CustomUserCreationForm, UserProfileForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.http import HttpResponseRedirect
 
 class RegisterView(CreateView):
     form_class = CustomUserCreationForm
@@ -28,12 +28,10 @@ class ProfileView(UpdateView):
     def get_object(self, queryset=None):
         return self.request.user  # Return the current user
 
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == 'POST':
+            return self.post(request, *args, **kwargs)  # Handle POST requests
+        return super().dispatch(request, *args, **kwargs)  # Handle GET requests
 
     def form_valid(self, form):
         form.save()  # Save the updated user information
