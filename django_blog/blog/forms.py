@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .models import Comment
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -26,3 +27,22 @@ class UserProfileForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']  # Only content field for the comment
+
+    def __init__(self, *args, **kwargs):
+        super(CommentForm, self).__init__(*args, **kwargs)
+        self.fields['content'].widget.attrs.update({
+            'placeholder': 'Write your comment here...',
+            'class': 'form-control',
+        })
+
+    def clean_content(self):
+        content = self.cleaned_data.get('content')
+        if not content:
+            raise forms.ValidationError("Comment cannot be empty.")
+        return content
