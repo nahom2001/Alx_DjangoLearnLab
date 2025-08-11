@@ -1,12 +1,13 @@
 from django.urls import path
 from django.contrib.auth import views as  auth_views
-from .views import ListView, CreateView, UpdateView, DetailView, DeleteView, BlogDetailView, CommentCreateView, CommentUpdateView, CommentDeleteView
+from .views import ListView, CreateView, UpdateView, DetailView, DeleteView, BlogDetailView, CommentCreateView, CommentUpdateView, CommentDeleteView, search_posts
 
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('register/', RegisterView.as_view(), name='register'),
     path('post/', ListView.as_view(), name='posts'),
+    path('posts/search/', search_posts, name='search_posts'),  # Add this line for search
     path('post/new/', CreateView.as_view(), name='new-post'),
     path('post/<int:pk>/detail/', DetailView.as_view(), name='post-detail'),
     path('post/<int:pk>/update/', UpdateView.as_view(), name='post-update'),
@@ -18,3 +19,4 @@ urlpatterns = [
     path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment_delete'),
     path('comment/<int:pk>/update/', CommentUpdateView.as_view(), name='comment_update'),
 ]
+
