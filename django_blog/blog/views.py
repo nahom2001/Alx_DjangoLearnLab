@@ -2,8 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .models import Post  # Assuming your blog post model is named Post
-from .forms import CustomUserCreationForm, UserProfileForm
+from .models import Post, Comment  
+from .forms import CustomUserCreationForm, UserProfileForm, CommentForm
 
 # ListView to display all blog posts
 class BlogListView(ListView):
@@ -78,3 +78,54 @@ class ProfileView(LoginRequiredMixin, UpdateView):
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
+
+
+
+# View to display all comments under a blog post
+class BlogDetailView(DetailView):
+    model = Post
+    template_name = 'blog/post_detail.html'
+    context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comments'] = self.object.comments.all()  # Fetch comments related to the post
+        context['comment_form'] = CommentForm()  # Pass a blank comment form
+        return context
+
+# View to create a new comment
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/post_detail.html'  # Template for detail view
+    success_url = reverse_lazy('post_list')  # Redirect after successful creation
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user  # Set the author to the current user
+        form.instance.post = Post.objects.get(id=self.kwargs['post_id'])  # Set the post
+        return super().form_valid(form)
+
+# View to edit a comment
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'  # A separate template for editing
+
+    def get_success_url(self):
+        return reverse_lazy('post_detail', kwargs={'pk': self.object.post.pk})  # Redirect back to the post
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author  # Ensure only the author can edit
+
+# View to delete a comment
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    template_name = 'blog/comment_confirm_delete.html'  # Confirmation template
+
+    def get_success_url(self):
+        return reverse_lazy('post_detail', kwargs={'pk': self.object.post.pk})  # Redirect back to the post
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author  # Ensure only the author can delete
