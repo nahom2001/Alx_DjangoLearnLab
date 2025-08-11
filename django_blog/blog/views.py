@@ -1,11 +1,50 @@
-from django.views.generic import CreateView, UpdateView
-from django.contrib.auth.views import LoginView, LogoutView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from .forms import CustomUserCreationForm, UserProfileForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.http import HttpResponseRedirect
+from .models import Post  # Assuming your blog post model is named Post
+from .forms import CustomUserCreationForm, UserProfileForm
 
+class ListView(ListView):
+    model = Post
+    template_name = 'blog/post_list.html'  # Template to    of 
+    context_object_name = 'posts'  
+
+class DetailView(DetailView):
+    model = Post
+    template_name = 'blog/post_detail.html'  
+    context_object_name = 'post'  
+
+@method_decorator(login_required, name='dispatch')
+class CreateView(CreateView):
+    model = Post
+    template_name = 'blog/post_form.html'  
+    fields = ['title', 'content']  
+    success_url = reverse_lazy('post_list')  
+
+@method_decorator(login_required, name='dispatch')
+class UpdateView(UpdateView):
+    model = Post
+    template_name = 'blog/post_form.html'  
+    fields = ['title', 'content']  # Fields to edit
+    success_url = reverse_lazy('post_list')  # Redirect after successful update
+
+    def get_queryset(self):
+        # Ensure only the author can edit their post
+        return Post.objects.filter(author=self.request.user)
+
+# DeleteView to let authors delete their posts
+@method_decorator(login_required, name='dispatch')
+class DeleteView(DeleteView):
+    model = Post
+    template_name = 'blog/post_confirm_delete.html'  # Template for confirming deletion
+    success_url = reverse_lazy('post_list')  # Redirect after successful deletion
+
+    def get_queryset(self):
+        # Ensure only the author can delete their post
+        return Post.objects.filter(author=self.request.user)
+
+# Registration and Authentication Views
 class RegisterView(CreateView):
     form_class = CustomUserCreationForm
     template_name = 'registration/register.html'
