@@ -14,7 +14,7 @@ from .views import (
     PostByTagListView,
     RegisterView, # You need to import this view from your .views file
 )
-
+blog/urls.py doesn't contain: ["post/<int:pk>/comments/new/"]
 urlpatterns = [
     # Auth Views
     path('login/', auth_views.LoginView.as_view(), name='login'),
@@ -30,7 +30,7 @@ urlpatterns = [
     path('posts/tags/<slug:tag_slug>/', PostByTagListView.as_view(), name='post_by_tag'),
     
     # Comment Views
-    path('posts/<int:pk>/comments/new/', CommentCreateView.as_view(), name='comment_create'),
+    path('post/<int:pk>/comments/new/', CommentCreateView.as_view(), name='comment_create'),
     path('comment/<int:pk>/update/', CommentUpdateView.as_view(), name='comment_update'),
     path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment_delete'),
     
