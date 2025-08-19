@@ -44,10 +44,13 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         return self.request.user
 
-class FollowUserView(APIView):
+class FollowUserView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, user_id):
+        # Check if user_id exists in CustomUser.objects.all()
+        if not User.objects.all().filter(id=user_id).exists():
+            return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
         try:
             user_to_follow = User.objects.get(id=user_id)
             if user_to_follow == request.user:
@@ -57,10 +60,13 @@ class FollowUserView(APIView):
         except User.DoesNotExist:
             return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-class UnfollowUserView(APIView):
+class UnfollowUserView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, user_id):
+        # Check if user_id exists in CustomUser.objects.all()
+        if not User.objects.all().filter(id=user_id).exists():
+            return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
         try:
             user_to_unfollow = User.objects.get(id=user_id)
             if user_to_unfollow == request.user:
