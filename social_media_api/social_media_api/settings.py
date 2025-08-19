@@ -27,6 +27,11 @@ DEBUG = False
 
 ALLOWED_HOSTS = []
 
+# Security settings
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'  # Prevents the site from being framed
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevents browsers from MIME-sniffing
+SECURE_SSL_REDIRECT = True  # Redirect all HTTP requests to HTTPS
 
 # Application definition
 
