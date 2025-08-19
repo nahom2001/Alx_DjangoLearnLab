@@ -32,8 +32,8 @@ urlpatterns = [
     
     # Comment Views
     path('posts/<int:post_id>/comments/new/', CommentCreateView.as_view(), name='comment_create'),
-    path('comments/<int:pk>/update/', CommentUpdateView.as_view(), name='comment_update'),
-    path('comments/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment_delete'),
+    path('comment/<int:pk>/update/', CommentUpdateView.as_view(), name='comment_update'),
+    path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment_delete'),
     
     # A URL for a user's profile, assuming a ProfileView exists
     path('profile/', views.ProfileView.as_view(), name='profile'),
